@@ -23,7 +23,7 @@ public:
 	GameController();
 	~GameController();
 	
-	void getControllerStates(vector<double>& gcAxes, vector<double>& gcButtons); 
+	void getControllerStates(std::vector<double>& gcAxes, std::vector<double>& gcButtons); 
 };
 
 GameController::GameController()
@@ -63,7 +63,7 @@ GameController::~GameController()
 	SDL_Quit();
 }
 
-void GameController::getControllerStates(vector<double>& gcAxes, vector<double>& gcButtons)
+void GameController::getControllerStates(std::vector<double>& gcAxes, std::vector<double>& gcButtons)
 {
     SDL_Joystick *aJoystick = SDL_GameControllerGetJoystick(aGameController);   
     SDL_JoystickUpdate();
@@ -83,8 +83,8 @@ static void mexcpp(mxArray *plhs[])
 {
 	GameController *aGameController = new GameController(); 
       
-    vector<double> gcAxes;
-	vector<double> gcButtons;
+    std::vector<double> gcAxes;
+	std::vector<double> gcButtons;
 	aGameController->getControllerStates(gcAxes, gcButtons);
     
     plhs[0] = mxCreateDoubleMatrix(gcAxes.size(), 1, mxREAL);
