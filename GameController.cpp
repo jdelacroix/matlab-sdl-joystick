@@ -3,11 +3,9 @@
 
 #ifdef _WIN64 || _WIN32 || __APPLE__
     #include <SDL.h>
-    #include <SDL_log.h>
 #else
     // Linux
     #include <SDL2/SDL.h>
-    #include <SDL2/SDL_log.h>
 #endif
 
 #include <iostream>
@@ -35,8 +33,7 @@ GameController::GameController()
 {
 	// 1. Initialize the SDL subsystems.
     if (SDL_InitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER)) {
-        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Error initializing SDL: %s\n", SDL_GetError());
-        exit(-1);
+        mexErrMsgTxt("Unable to initialize SDL and its subsystems.");
     }
     
     SDL_GameControllerEventState(SDL_ENABLE);
@@ -60,7 +57,6 @@ GameController::GameController()
         }
     } else {
         mexErrMsgTxt("No game controllers were found.");
-        exit(-1);
     }
 }
 
@@ -123,8 +119,9 @@ void mexFunction(
 		 const mxArray  *prhs[]
 		 )
 {
-    if (nrhs != 0)
+    if (nrhs != 0) {
         mexErrMsgTxt("No input arguments are needed for GameController.");
+    }
 	
 	mexcpp(plhs);
 	return;
