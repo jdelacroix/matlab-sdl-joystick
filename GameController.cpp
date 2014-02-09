@@ -12,10 +12,7 @@
 #include <vector>
 #include "mex.h"
 
-using namespace std;
-
 extern void _main();
-
 
 class GameController {
 
