@@ -46,10 +46,11 @@ GameController::GameController()
                 if (aGameController) {
                     break;
                 } else {
-                    SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Unable to open game controller.\n");
+                    mexErrMsgTxt("Unable to open game controller");
                 }
             } else {
                 std::cout << "Device " << i << " is not a compatible game controller." << std::endl;
+                aGameController = NULL;
             }           
         }
     } else {
@@ -63,19 +64,21 @@ GameController::~GameController()
 	SDL_Quit();
 }
 
-void GameController::getControllerStates(std::vector<double>& gcAxes, std::vector<double>& gcButtons)
-{
-    SDL_Joystick *aJoystick = SDL_GameControllerGetJoystick(aGameController);   
-    SDL_JoystickUpdate();
+void GameController::getControllerStates(std::vector<double>& gcAxes, std::vector<double>& gcButtons) {
     
-    int nAxes = SDL_JoystickNumAxes(aJoystick);
-    for (int i=0; i<nAxes; i++) {
-        gcAxes.push_back(SDL_JoystickGetAxis(aJoystick, i));
-    }
+    if (aGameController) {
+        SDL_Joystick *aJoystick = SDL_GameControllerGetJoystick(aGameController);
+        SDL_JoystickUpdate();
     
-    int nButtons = SDL_JoystickNumButtons(aJoystick);
-    for (int i=0; i<nButtons; i++) {
-        gcButtons.push_back(SDL_JoystickGetButton(aJoystick, i));
+        int nAxes = SDL_JoystickNumAxes(aJoystick);
+        for (int i=0; i<nAxes; i++) {
+            gcAxes.push_back(SDL_JoystickGetAxis(aJoystick, i));
+        }
+
+        int nButtons = SDL_JoystickNumButtons(aJoystick);
+        for (int i=0; i<nButtons; i++) {
+            gcButtons.push_back(SDL_JoystickGetButton(aJoystick, i));
+        }
     }
 }
 
@@ -85,6 +88,10 @@ static void mexcpp(mxArray *plhs[])
       
     std::vector<double> gcAxes;
 	std::vector<double> gcButtons;
+    
+    gcAxes.clear();
+    gcButtons.clear();
+    
 	aGameController->getControllerStates(gcAxes, gcButtons);
     
     plhs[0] = mxCreateDoubleMatrix(gcAxes.size(), 1, mxREAL);
