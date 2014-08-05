@@ -17,18 +17,18 @@ extern void _main();
 class GameController {
 
 private:
-	SDL_GameController* aGameController;
+    SDL_GameController* aGameController;
     
 public:
-	GameController();
-	~GameController();
-	
-	void getControllerStates(std::vector<double>& gcAxes, std::vector<double>& gcButtons); 
+    GameController();
+    ~GameController();
+    
+    void getControllerStates(std::vector<double>& gcAxes, std::vector<double>& gcButtons); 
 };
 
 GameController::GameController() {
 
-	// 1. Initialize the SDL subsystems.
+    // 1. Initialize the SDL subsystems.
     if (SDL_InitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER)) {
         mexErrMsgTxt("Unable to initialize SDL and its subsystems.");
     }
@@ -61,7 +61,7 @@ GameController::GameController() {
 GameController::~GameController()
 {
     SDL_GameControllerClose(aGameController);
-	SDL_Quit();
+    SDL_Quit();
 }
 
 void GameController::getControllerStates(std::vector<double>& gcAxes, std::vector<double>& gcButtons) {
@@ -84,36 +84,36 @@ void GameController::getControllerStates(std::vector<double>& gcAxes, std::vecto
 
 static void mexcpp(mxArray *plhs[]) {
 
-	GameController *aGameController = new GameController(); 
+    GameController *aGameController = new GameController(); 
       
     std::vector<double> gcAxes;
-	std::vector<double> gcButtons;
+    std::vector<double> gcButtons;
     
     gcAxes.clear();
     gcButtons.clear();
     
-	aGameController->getControllerStates(gcAxes, gcButtons);
+    aGameController->getControllerStates(gcAxes, gcButtons);
     
     plhs[0] = mxCreateDoubleMatrix(gcAxes.size(), 1, mxREAL);
-	plhs[1] = mxCreateDoubleMatrix(gcButtons.size(), 1, mxREAL);
+    plhs[1] = mxCreateDoubleMatrix(gcButtons.size(), 1, mxREAL);
     
     double* axes;
-	double*	buttons;
+    double* buttons;
 
     axes = mxGetPr(plhs[0]);
-	buttons = mxGetPr(plhs[1]);
+    buttons = mxGetPr(plhs[1]);
 
-	for (int i=0; i<gcAxes.size(); i++) {
-		*(axes+i) = gcAxes.at(i);	
-	}
+    for (int i=0; i<gcAxes.size(); i++) {
+        *(axes+i) = gcAxes.at(i);    
+    }
 
-	for (int i=0; i<gcButtons.size(); i++) {
-		*(buttons+i) = gcButtons.at(i);	
-	}
+    for (int i=0; i<gcButtons.size(); i++) {
+        *(buttons+i) = gcButtons.at(i);    
+    }
     
-	delete(aGameController);
-	
-	return;
+    delete(aGameController);
+    
+    return;
 }
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
@@ -121,7 +121,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
     if (nrhs != 0) {
         mexErrMsgTxt("No input arguments are needed for GameController.");
     }
-	
-	mexcpp(plhs);
-	return;
+    
+    mexcpp(plhs);
+    return;
 }

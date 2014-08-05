@@ -17,18 +17,18 @@ extern void _main();
 class Joystick {
 
 private:
-	SDL_Joystick* aJoystick;
+    SDL_Joystick* aJoystick;
     
 public:
-	Joystick();
-	~Joystick();
-	
-	void getControllerStates(std::vector<double>& jsAxes, std::vector<double>& jsButtons); 
+    Joystick();
+    ~Joystick();
+    
+    void getControllerStates(std::vector<double>& jsAxes, std::vector<double>& jsButtons); 
 };
 
 Joystick::Joystick()
 {
-	// 1. Initialize the SDL subsystems.
+    // 1. Initialize the SDL subsystems.
     if (SDL_InitSubSystem(SDL_INIT_JOYSTICK)) {
         mexErrMsgTxt("Unable to initialize SDL and its subsystems.");
     }
@@ -56,7 +56,7 @@ Joystick::Joystick()
 Joystick::~Joystick()
 {
     SDL_JoystickClose(aJoystick);
-	SDL_Quit();
+    SDL_Quit();
 }
 
 void Joystick::getControllerStates(std::vector<double>& jsAxes, std::vector<double>& jsButtons) {
@@ -76,43 +76,43 @@ void Joystick::getControllerStates(std::vector<double>& jsAxes, std::vector<doub
 }
 
 static void mexcpp(mxArray *plhs[]) {
-	Joystick *aJoystick = new Joystick(); 
+    Joystick *aJoystick = new Joystick(); 
       
     std::vector<double> jsAxes;
-	std::vector<double> jsButtons;
+    std::vector<double> jsButtons;
     
     jsAxes.clear();
     jsButtons.clear();
     
-	aJoystick->getControllerStates(jsAxes, jsButtons);
+    aJoystick->getControllerStates(jsAxes, jsButtons);
     
     plhs[0] = mxCreateDoubleMatrix(jsAxes.size(), 1, mxREAL);
-	plhs[1] = mxCreateDoubleMatrix(jsButtons.size(), 1, mxREAL);
+    plhs[1] = mxCreateDoubleMatrix(jsButtons.size(), 1, mxREAL);
     
     double* axes;
-	double*	buttons;
+    double* buttons;
 
     axes = mxGetPr(plhs[0]);
-	buttons = mxGetPr(plhs[1]);
+    buttons = mxGetPr(plhs[1]);
 
-	for (int i=0; i<jsAxes.size(); i++) {
-		*(axes+i) = jsAxes.at(i);	
-	}
+    for (int i=0; i<jsAxes.size(); i++) {
+        *(axes+i) = jsAxes.at(i);    
+    }
 
-	for (int i=0; i<jsButtons.size(); i++) {
-		*(buttons+i) = jsButtons.at(i);	
-	}
+    for (int i=0; i<jsButtons.size(); i++) {
+        *(buttons+i) = jsButtons.at(i);    
+    }
     
-	delete(aJoystick);
-	
-	return;
+    delete(aJoystick);
+    
+    return;
 }
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray  *prhs[]) {
     if (nrhs != 0) {
         mexErrMsgTxt("No input arguments are needed for GameController.");
     }
-	
-	mexcpp(plhs);
-	return;
+    
+    mexcpp(plhs);
+    return;
 }
